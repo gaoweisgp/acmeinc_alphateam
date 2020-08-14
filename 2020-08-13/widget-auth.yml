@@ -1,0 +1,15 @@
+# 2020-08-13/widget-auth.yml
+- name: Edit to the auth system
+  hosts: localhost
+  connection: local
+  
+  # a collection with a callback plugin could be developed
+  # of course the collection could do other things as well
+  # but perhaps its last step would be pushing the log anyplace you wished
+  # or handle the log any way you wanted
+  # see the callback plugin called "default" to see how it is currently being handled
+  
+  tasks:
+  - name: Demo task - Our Engineer would create this
+    debug:
+      msg: "A single task representing a change operation"
