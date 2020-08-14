@@ -1,0 +1,12 @@
+# Engineers should edit this file when they're ready for Jenkins to run their change operations
+# Change operations are run on a nightly basis (2am to 4am)
+# All playbooks should begin in a relative root that includes YYYY-MM-DD
+# Example:
+# - name: My work to be done
+#   import_playbook: 2019-01-12/hal-bootstrap.yml
+
+- name: Update the widget-auth app
+  import_playbook: 2020-08-13/widget-auth.yml
+  
+- name: Audit widget system
+  import_playbook: 2020-08-13/widget-audit.yml
