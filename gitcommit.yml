@@ -1,0 +1,55 @@
+- name: Jenkins always runs this playbook after a change playbook
+  host: localhost
+  connection: local
+  no_log: true       # we don't want to log our logging operations!
+
+  tasks:  
+    #== Do we need updated?
+    - name: Is what is on git in step with what is local?
+      git:
+        repo: github.com/acmeinc_alphateam
+        dest: /acmeinc_alphateam
+        update: yes
+        version: master  # <- get creative on how to update this
+                         # to reflect the current branch
+      register: git
+      ignore_errors: True
+    - debug:
+        var: git     # git.msg will only be defined if a change occurred!
+
+    #== Move file to proper location
+    - name: Move the log to the proper location
+      stat: path=result/
+      register: log_stat
+
+    - name: Move foo to bar
+      command: mv result/ansible.log result/{{YYYY-MM-DD}}/ansible.log   # must grok on year
+      when: log_stat.stat.exists  
+
+    #== Add files to git
+    - name: Git - Adding
+      shell: "git add *"
+      args:
+        chdir: /acmeinc_alphateam
+      register: gitadd
+      when: git.msg is defined
+    - debug:
+        var: gitadd.cmd
+    #================================
+    - name: Git - commiting
+      shell: git commit -m "Ansible Backup" 
+      args:
+        chdir: /acmeinc_alphateam
+      register: gitcommit
+      when: git.msg is defined
+    - debug:
+        var: gitcommit.stdout
+    #================================  
+    - name: Git - push
+      shell: git push 
+      args:
+        chdir: /acmeinc_alphateam
+      register: gitpush
+      when: git.msg is defined
+    - debug:
+        var: gitpush
